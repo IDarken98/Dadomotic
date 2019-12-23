@@ -30,8 +30,7 @@ const uint8_t NUMBER_OF_VARIABLES = 1; // Cantidad de variables a las que el pro
 char * variable_labels[NUMBER_OF_VARIABLES] = {"rele"}; // Variables names
 
 
-#define luz  2
-#define boton  0
+#define luz  0
 
 int seguro=0;
 
@@ -66,6 +65,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
   execute_cases();
   free(variable_label);
   /////////////////Light////////////////////
+
+ Serial.println("ESTADO DE LUX: ");
+  Serial.print(estadoluz);
 
   digitalWrite(luz, estadoluz);
  
@@ -149,7 +151,6 @@ void setup() {
 
   // put your setup code here, to run once:
   pinMode(luz, OUTPUT);  
-  pinMode(boton, OUTPUT); 
   ubiClient.ubidotsSetBroker("industrial.api.ubidots.com"); // Sets the broker properly for the business account
   ubiClient.setDebug(true); // Pass a true or false bool value to activate debug messages
   Serial.begin(115200);
@@ -181,47 +182,11 @@ void loop() {
   }
   ubiClient.loop();    
   
-  Read();
 
-  Debounce();
 
   // save the reading. Next time through the loop, it'll be the lastButtonState:
   lastButtonState = reading;
           
-}
-
-void Read(){
-  // read the state of the switch into a local variable:
-  reading = digitalRead(boton);
-  if (reading != lastButtonState) {
-    // reset the debouncing timer
-    lastDebounceTime = millis();
-  }
-}
-
-void Debounce(){
-  if ((millis() - lastDebounceTime) > debounceDelay) {
-    // whatever the reading is at, it's been there for longer than the debounce
-    // delay, so take it as the actual current state:
-
-    // if the button state has changed:
-    if (reading != buttonState) {
-      buttonState = reading;
-      Toggle();
-      
-    }
-  }
-}
-
-void Toggle(){
-  // only toggle the LED if the new button state is LOW
-  if (buttonState == LOW) {
-    ledState = !ledState;
-    // set the LED:
-    digitalWrite(luz, ledState);
-    ubiClient.add("rele", ledState); //Insert your variable Labels and the value to be sent
-    ubiClient.ubidotsPublish(DEVICE_LABEL);
-  }  
 }
 
 char* getUbidotsDevice(char* deviceLabel) {
@@ -258,6 +223,8 @@ char* getUbidotsDevice(char* deviceLabel) {
       break;
     }
   }
+
+  
   char * pch;
   char * statusCode;
   int j = 0;
