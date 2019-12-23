@@ -30,8 +30,8 @@ const uint8_t NUMBER_OF_VARIABLES = 1; // Cantidad de variables a las que el pro
 char * variable_labels[NUMBER_OF_VARIABLES] = {"rele"}; // Variables names
 
 
-#define luz  0
-#define boton  2
+#define luz  2
+#define boton  0
 
 int seguro=0;
 
@@ -149,7 +149,7 @@ void setup() {
 
   // put your setup code here, to run once:
   pinMode(luz, OUTPUT);  
-  pinMode(boton, INPUT); 
+  pinMode(boton, OUTPUT); 
   ubiClient.ubidotsSetBroker("industrial.api.ubidots.com"); // Sets the broker properly for the business account
   ubiClient.setDebug(true); // Pass a true or false bool value to activate debug messages
   Serial.begin(115200);
